@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
+from core.task import run_migrate
 from core.utils.dependencies import sync_permissions_to_db
 from core.utils.base_roles import create_roles
 from core.utils.assign_user_roles import setup_admin_user
@@ -17,6 +18,7 @@ async def lifespan(app: FastAPI):
     
     try:
         # Sync permissions to database
+        run_migrate()
         await sync_permissions_to_db()
         await create_roles()
         await setup_admin_user()
