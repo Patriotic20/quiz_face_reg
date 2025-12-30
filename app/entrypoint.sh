@@ -3,7 +3,7 @@ set -e
 
 if [ -f "/app/app/alembic.ini" ]; then
   echo "Running migrations..."
-  uv run alembic upgrade head
+  alembic upgrade head
 fi
 
 echo "Starting application..."
