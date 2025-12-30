@@ -27,7 +27,7 @@ RUN pip install --upgrade pip \
 COPY . .
 
 # Ensure entrypoint is executable
-RUN chmod +x /app/app/entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 # Expose FastAPI port
 EXPOSE 8000
