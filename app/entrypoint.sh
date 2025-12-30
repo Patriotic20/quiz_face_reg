@@ -1,10 +1,14 @@
 #!/bin/bash
 set -e
 
-if [ -f "/app/app/alembic.ini" ]; then
+cd /app/app
+
+if [ -f "alembic.ini" ]; then
   echo "Running migrations..."
-  alembic upgrade head
+  alembic -c alembic.ini upgrade head
+else
+  echo "alembic.ini not found, skipping migrations"
 fi
 
 echo "Starting application..."
-exec python /app/app/main.py
+exec python main.py
