@@ -33,4 +33,4 @@ RUN chmod +x /app/entrypoint.sh
 EXPOSE 8000
 
 # Start container
-CMD ["python", "/app/main.py"]
+CMD ["python", "/app/app/main.py"]
