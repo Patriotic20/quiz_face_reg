@@ -2,7 +2,7 @@
 set -e
 
 echo "Running migrations..."
-alembic -c /app/alembic.ini upgrade head
+alembic upgrade head
 
 echo "Starting application..."
 exec python /app/main.py
