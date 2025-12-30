@@ -5,9 +5,9 @@ from modules.router import router as main_router
 from core.config import settings
 from core.lifespan import lifespan
 
-# main_app = FastAPI(lifespan=lifespan)
+main_app = FastAPI(lifespan=lifespan)
 
-main_app = FastAPI()
+# main_app = FastAPI()
 
 main_app.include_router(main_router)
 
