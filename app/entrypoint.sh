@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if [ -f "/app/alembic.ini" ]; then
+if [ -f "alembic.ini" ]; then
   echo "Running migrations..."
   uv run alembic upgrade head
 fi
