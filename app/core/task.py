@@ -19,7 +19,7 @@ def run_migrate(migration_dir=None):
             shell=True, 
             capture_output=True, 
             text=True, 
-            cwd=migration_dir or "/app/app"
+            cwd=migration_dir or "/app"
         )
         
         if result.returncode == 0:
