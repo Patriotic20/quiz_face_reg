@@ -1,5 +1,8 @@
 import subprocess
 import sys
+from core.logging import logging
+
+logger = logging.getLogger(__name__)
 
 def run_migrate(migration_dir=None):
     """Run Alembic upgrade to head revision.
@@ -11,18 +14,22 @@ def run_migrate(migration_dir=None):
     code = "alembic upgrade head"
     
     try:
-        result = subprocess.run(code, shell=True, capture_output=True, text=True, cwd=migration_dir)
+        result = subprocess.run(
+            code, 
+            shell=True, 
+            capture_output=True, 
+            text=True, 
+            cwd=migration_dir or "/app/app"
+        )
         
         if result.returncode == 0:
-            print("Migration successful!")
-            print(result.stdout)
+            logger.info("Migration successful!")
+            logger.info(result.stdout)
             return True
         else:
-            print("Migration failed!")
-            print(result.stderr)
+            logger.error("Migration failed!")
+            logger.error(result.stderr)
             return False
     except Exception as e:
-        print(f"Error running migration: {e}")
+        logger.error(f"Error running migration: {e}")
         return False
-
-
