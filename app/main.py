@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-from app.task import run_migrate
+from core.task import run_migrate
 from modules.router import router as main_router
 from core.config import settings
 from core.lifespan import lifespan
