@@ -5,7 +5,7 @@ cd /app/app
 
 if [ -f "alembic.ini" ]; then
   echo "Running migrations..."
-  alembic -c alembic.ini upgrade head
+  alembic upgrade head
 else
   echo "alembic.ini not found, skipping migrations"
 fi
