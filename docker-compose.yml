@@ -59,10 +59,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      # Mount SSL certificates if you have them locally
-      # - ./certs:/etc/letsencrypt:ro
     depends_on:
       - app
     restart: unless-stopped
