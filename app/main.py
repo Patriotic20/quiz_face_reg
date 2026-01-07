@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from modules.router import router as main_router
@@ -8,6 +9,8 @@ from core.lifespan import lifespan
 main_app = FastAPI(lifespan=lifespan)
 
 # main_app = FastAPI()
+
+main_app.mount("/uploads", StaticFiles(directory="uploads/"), name="uploads")
 
 main_app.include_router(main_router)
 
