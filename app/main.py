@@ -12,6 +12,7 @@ main_app = FastAPI(lifespan=lifespan)
 
 main_app.mount("/uploads", StaticFiles(directory="app/uploads"), name="uploads")
 
+
 main_app.include_router(main_router)
 
 
