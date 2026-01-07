@@ -30,7 +30,7 @@ COPY . .
 RUN chmod +x /app/entrypoint.sh
 
 # Expose FastAPI port
-EXPOSE 8000
+EXPOSE 8080
 
 # Start container
 CMD ["python", "/app/app/main.py"]
