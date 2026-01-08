@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from fastapi import HTTPException, status
 
@@ -97,7 +98,13 @@ class AuthService:
     async def get_by_username(self, username: str) -> User | None:
         logger.debug(f"Fetching user by username: {username}")
         
-        stmt = select(User).where(User.username == username)
+        stmt = (
+            select(User)
+            .where(User.username == username)
+            .options(
+                selectinload(User.roles)
+            )
+        )
         result = await self.session.execute(stmt)
         user = result.scalars().first()
         
