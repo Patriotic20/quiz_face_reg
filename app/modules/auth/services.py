@@ -83,7 +83,10 @@ class AuthService:
             )
 
         logger.info(f"User logged in successfully: {user.id} ({user.username})")
-        payload = {"sub": str(user.id)}
+        payload = {
+            "sub": str(user.id),
+            "role": str(user.roles[0].name)
+            }
 
         return UserLoginResponse(
             token_type="Bearer",
@@ -144,7 +147,10 @@ class AuthService:
             )
 
         logger.info(f"Token refreshed successfully for user: {user_id}")
-        new_payload = {"sub": str(user.id)}
+        new_payload = {
+            "sub": str(user.id),
+            "role": str(user.roles[0].name)
+            }
 
         return UserLoginResponse(
             token_type="Bearer",
