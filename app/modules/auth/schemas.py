@@ -1,42 +1,50 @@
-from pydantic import BaseModel, field_validator, Field, computed_field
+from pydantic import BaseModel, field_validator, Field, ConfigDict
 from core.utils.normalize_str import normalize_str
 from .utils.password_hash import hash_password
-
+from typing import Any
 
 class UserCreate(BaseModel):
+    last_name: str 
+    first_name: str 
+    third_name: str
+    jshir: str 
+    passport_series: str
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=3)
-    
+
+    @field_validator("last_name", "first_name", "third_name", "jshir", "passport_series", mode="before")
+    @classmethod
+    def strip_strings(cls, v: str) -> str:
+        """Удаляет лишние пробелы в начале и в конце для всех текстовых полей"""
+        if isinstance(v, str):
+            return v.strip()
+        return v
+
     @field_validator("username", mode="before")
     @classmethod
     def normalize_username(cls, value: str) -> str:
-        """Normalize username before validation"""
-        if not value or not value.strip():
-            raise ValueError("Username is required")
-        return normalize_str(value)
+        if isinstance(value, str):
+            # normalize_str обычно уже включает в себя strip()
+            return normalize_str(value.strip())
+        return value
     
-    @field_validator("password", mode="before")
+    @field_validator("password", mode="after")
     @classmethod
-    def validate_password(cls, value: str) -> str:
-        """Validate password before hashing"""
-        if not value or not value.strip():
-            raise ValueError("Password is required")
+    def hash_user_password(cls, value: str) -> str:
+        # Пароль тоже стоит обрезать перед хешированием, если пользователь случайно нажал пробел
         return hash_password(value.strip())
 
-
 class UserCreateResponse(BaseModel):
-    """Response model after user creation"""
     id: int
     username: str
+    last_name: str 
+    first_name: str 
+    third_name: str
+    jshir: str 
+    passport_series: str
+    image: str
     
-    class Config:
-        from_attributes = True
-        json_schema_extra = {
-            "example": {
-                "id": 1,
-                "username": "john_doe"
-            }
-        }
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserLogin(BaseModel):

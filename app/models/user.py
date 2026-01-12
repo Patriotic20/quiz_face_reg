@@ -13,9 +13,16 @@ if TYPE_CHECKING:
     from .questions import Question
     from .user_answer import UserAnswer
 
-class User(IdIntPk, TimestampMixin ,Base):
+class User(IdIntPk, TimestampMixin, Base):
     __tablename__ = "users"
-
+    
+    last_name: Mapped[str] = mapped_column(nullable=True)
+    first_name: Mapped[str] = mapped_column(nullable=True)
+    third_name: Mapped[str] = mapped_column(nullable=True)
+    
+    jshir: Mapped[str] = mapped_column(nullable=True)
+    passport_series: Mapped[str] = mapped_column(nullable=True)
+    
     username: Mapped[str] = mapped_column(
         String(50),
         unique=True,
@@ -39,12 +46,10 @@ class User(IdIntPk, TimestampMixin ,Base):
         back_populates="users"
     )
     
-    
     quizzes: Mapped[list["Quiz"]] = relationship(
         "Quiz",
         back_populates="user",   
     )
-    
     
     results: Mapped[list["Result"]] = relationship(
         "Result", 
@@ -60,4 +65,3 @@ class User(IdIntPk, TimestampMixin ,Base):
         "Question",
         back_populates="user"
     )
-    
