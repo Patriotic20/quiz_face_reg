@@ -32,5 +32,5 @@ RUN chmod +x /app/entrypoint.sh
 # Expose FastAPI port
 EXPOSE 8080
 
-ENTRYPOINT ["/app/app/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["python", "/app/app/main.py"]
