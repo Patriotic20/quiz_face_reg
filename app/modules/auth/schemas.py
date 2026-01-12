@@ -1,7 +1,7 @@
-from pydantic import BaseModel, field_validator, Field, ConfigDict
+from pydantic import BaseModel, field_validator, Field, ConfigDict, computed_field
 from core.utils.normalize_str import normalize_str
 from .utils.password_hash import hash_password
-from typing import Any
+
 
 class UserCreate(BaseModel):
     last_name: str 
