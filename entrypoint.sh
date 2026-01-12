@@ -1,8 +1,11 @@
 #!/bin/bash
 set -e
 
+
 # Если ваши миграции (папка alembic) лежат в подпапке /app/app
 # то может потребоваться переход: cd /app
+
+cd /app/app
 echo "Running migrations..."
 alembic upgrade head
 
