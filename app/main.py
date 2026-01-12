@@ -16,7 +16,7 @@ admin.add_view(UserAdmin)
 
 # main_app = FastAPI()
 
-main_app.mount("/uploads", StaticFiles(directory="app/uploads"), name="uploads")
+main_app.mount("/uploads", StaticFiles(directory="/app/app/uploads"), name="uploads")
 
 
 main_app.include_router(main_router)

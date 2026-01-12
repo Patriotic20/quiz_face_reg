@@ -31,23 +31,26 @@ services:
       ports:
         - "6379:6379"
 
-  # app:
-  #   build: .
-  #   container_name: face_test_app
-  #   environment:
-  #     DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
-  #   expose:
-  #     - "8000"
-  #   volumes:
-  #     - ./app:/app/app
-  #     - ./app/uploads:/app/app/uploads
+  app:
+    build: .
+    container_name: face_test_app
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+    depends_on:
+      - database
+      - redis  
+    expose:
+      - "8000"
+    volumes:
+      - ./app:/app/app
+      - ./app/uploads:/app/app/uploads
 
-  # gateway:
-  #   image: nginx:alpine
-  #   container_name: nginx_gateway
-  #   ports:
-  #     - "80:80"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
-  #   depends_on:
-  #     - app
+  gateway:
+    image: nginx:alpine
+    container_name: nginx_gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app

@@ -8,6 +8,7 @@ from core.utils.assign_user_roles import setup_admin_user
 from core.utils.redis_helper import init_redis_services
 from core.logging import logging
 from core.db_helper import db_helper
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ async def lifespan(app: FastAPI):
     
     try:
         # Вызов вашей новой функции
-        redis_conn = await init_redis_services("redis://localhost")
+        redis_conn = await init_redis_services(settings.redis.url)
         logger.info("Redis services initialized.")
 
         # Остальные задачи
