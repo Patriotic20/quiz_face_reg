@@ -9,7 +9,13 @@ from models.user import User
 
 from .services import ResultService
 
-router = APIRouter(tags=["Result"], prefix="/results")
+# Logger obyektini sozlash
+logger = logging.getLogger(__name__)
+
+router = APIRouter(
+    tags=["Result"], 
+    prefix="/results"
+)
 
 
 def get_result_service(
@@ -18,38 +24,35 @@ def get_result_service(
     return ResultService(session=session)
 
 
-@router.get("/{result_id}")
+@router.get(
+    "/{result_id}",
+    summary="Natijani ID bo'yicha olish",
+    description="Muayyan test topshirish natijasi haqidagi to'liq ma'lumotni ko'rish."
+)
 async def get_by_id_result(
     result_id: int,
     service: ResultService = Depends(get_result_service),
-    _: User = Depends(require_permission("results:retrieve")),
+    current_user: User = Depends(require_permission("results:retrieve")),
 ):
-    try:
-        logging.info(f"Fetching result with ID: {result_id}")
-        result = await service.get_by_id_result(result_id=result_id)
-        logging.info(f"Successfully retrieved result with ID: {result_id}")
-        return result
-    except Exception as e:
-        logging.error(f"Error fetching result with ID {result_id}: {str(e)}")
-        raise
+    logger.info(f"GET /results/{result_id} - Foydalanuvchi {current_user.id} natijani ko'rmoqda")
+    return await service.get_by_id_result(result_id=result_id)
 
 
-@router.get("")
+@router.get(
+    "",
+    summary="Test bo'yicha barcha natijalarni olish",
+    description="Muayyan test (quiz_id) bo'yicha barcha topshirilgan natijalar ro'yxatini ko'rish."
+)
 async def get_all_result_by_quiz(
     quiz_id: int,
     pagination: Pagination = Depends(),
     service: ResultService = Depends(get_result_service),
-    _: User = Depends(require_permission("results:all")),
+    current_user: User = Depends(require_permission("results:all")),
 ):
-    try:
-        logging.info(
-            f"Fetching results for quiz ID: {quiz_id} with pagination: {pagination}"
-        )
-        results = await service.get_all_result_by_quiz(
-            quiz_id=quiz_id, pagination=pagination
-        )
-        logging.info(f"Successfully retrieved results for quiz ID: {quiz_id}")
-        return results
-    except Exception as e:
-        logging.error(f"Error fetching results for quiz ID {quiz_id}: {str(e)}")
-        raise
+    logger.info(
+        f"GET /results - Foydalanuvchi {current_user.id} quiz_id {quiz_id} bo'yicha natijalarni olmoqda (Sahifa: {pagination.page})"
+    )
+    return await service.get_all_result_by_quiz(
+        quiz_id=quiz_id, 
+        pagination=pagination
+    )

@@ -6,73 +6,73 @@ from core.schemas.pagination import PaginatedResponse
 
 
 class QuizCreateRequest(BaseModel):
-    """Request model for creating a quiz"""
-    name: str = Field(..., min_length=1, max_length=100)
-    during: int = Field(..., gt=0, description="Quiz duration in minutes")
-    quiz_number: int = Field(default=0, ge=0, description="Quiz number starting from 0")
-    pin: str
+    """Test yaratish uchun so'rov modeli"""
+    name: str = Field(..., min_length=1, max_length=100, description="Testning nomi")
+    during: int = Field(..., gt=0, description="Test davomiyligi (daqiqalarda)")
+    quiz_number: int = Field(default=0, ge=0, description="Test tartib raqami (0 dan boshlanadi)")
+    pin: str = Field(..., description="Testga kirish uchun maxsus PIN-kod")
     
     @field_validator("name")
     @classmethod
     def validate_name(cls, v):
-        """Validate name is not empty"""
+        """Nom bo'sh emasligini tekshirish"""
         if not v.strip():
-            raise ValueError("Name cannot be empty")
+            raise ValueError("Test nomi bo'sh bo'lishi mumkin emas")
         return v.strip()
 
 
 class QuizCreate(QuizCreateRequest):
-    """Model for creating quiz with internal fields"""
-    user_id: int = Field(..., gt=0)
+    """Ichki maydonlar bilan test yaratish modeli"""
+    user_id: int = Field(..., gt=0, description="Testni yaratgan foydalanuvchi (o'qituvchi) ID-si")
 
-
-    
 
 class QuizResponse(DateTimeMixin):
-    id: int
-    name: str
-    quiz_number: int
-    during: int
-    pin: str
+    """Test ma'lumotlarini qaytarish uchun model"""
+    id: int = Field(..., description="Testning unikal ID-si")
+    name: str = Field(..., description="Test nomi")
+    quiz_number: int = Field(..., description="Test tartib raqami")
+    during: int = Field(..., description="Berilgan vaqt (daqiqa)")
+    pin: str = Field(..., description="Kirish PIN-kodi")
     
 
 class QuizUpdate(BaseModel):
-    """Model for updating a quiz - all fields are optional"""
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    during: Optional[int] = Field(None, gt=0, description="Quiz duration in minutes")
-    quiz_number: Optional[int] = Field(None, ge=0, description="Quiz number starting from 0")
-    pin: str
+    """Testni tahrirlash modeli - barcha maydonlar ixtiyoriy"""
+    name: Optional[str] = Field(None, min_length=1, max_length=100, description="Yangi nom")
+    during: Optional[int] = Field(None, gt=0, description="Yangi davomiylik vaqti")
+    quiz_number: Optional[int] = Field(None, ge=0, description="Yangi tartib raqami")
+    pin: Optional[str] = Field(None, description="Yangi PIN-kod")
     
     @field_validator("name")
     @classmethod
     def validate_name(cls, v):
-        """Validate name is not empty if provided"""
+        """Agar nom berilgan bo'lsa, uning bo'sh emasligini tekshirish"""
         if v is not None and not v.strip():
-            raise ValueError("Name cannot be empty")
+            raise ValueError("Test nomi bo'sh bo'lishi mumkin emas")
         return v.strip() if v else None
     
     
-    
 class QuizListResponse(PaginatedResponse):
-    quizzes: list[QuizResponse]
-    
+    """Pagunatsiya bilan testlar ro'yxatini qaytarish modeli"""
+    quizzes: list[QuizResponse] = Field(..., description="Testlar ro'yxati")
+
+
 class AnswerItem(BaseModel):
-    """Model for a single answer submission."""
-    question_id: int = Field(..., description="ID of the question")
-    option: str = Field(..., description="Selected answer option")
+    """Bitta savolga berilgan javob modeli"""
+    question_id: int = Field(..., description="Savolning ID-si")
+    option: str = Field(..., description="Tanlangan javob varianti")
 
 
 class EndQuizCreate(BaseModel):
-    """Model for submitting a completed quiz."""
-    quiz_id: int = Field(..., description="ID of the quiz being submitted")
-    answers: list[AnswerItem] = Field(..., description="List of answers provided")
+    """Testni yakunlash va topshirish modeli"""
+    quiz_id: int = Field(..., description="Topshirilayotgan testning ID-si")
+    answers: list[AnswerItem] = Field(..., description="Berilgan javoblar ro'yxati")
 
 
 class QuizResultResponse(BaseModel):
-    """Response model after quiz submission."""
-    quiz_id: int
-    total_questions: int
-    correct_answers: int
-    incorrect_answers: int
-    score_percentage: float
-    grade: str
+    """Test topshirilgandan keyingi natija modeli"""
+    quiz_id: int = Field(..., description="Test ID-si")
+    total_questions: int = Field(..., description="Umumiy savollar soni")
+    correct_answers: int = Field(..., description="To'g'ri javoblar soni")
+    incorrect_answers: int = Field(..., description="Noto'g'ri javoblar soni")
+    score_percentage: float = Field(..., description="Umumiy natija foizda")
+    grade: str = Field(..., description="Baho yoki natija darajasi")

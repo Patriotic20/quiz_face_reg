@@ -32,3 +32,6 @@ class Role(IdIntPk, TimestampMixin, Base):
         secondary="role_permission_association",
         back_populates="roles"
     )
+    
+    def __str__(self) -> str:
+        return self.name

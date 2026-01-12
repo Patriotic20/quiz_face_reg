@@ -41,6 +41,21 @@ class AdminConfig(BaseModel):
 class FileUrl(BaseModel):
     http: str
     upload_dir: str
+    
+
+class RedisConfig(BaseModel):
+    host: str = "localhost"
+    port: int = 6379
+    password: str | None = None  
+    prefix: str = "fastapi-cache"
+
+    @property
+    def url(self) -> str:
+        """Собирает URL для подключения к Redis"""
+        if self.password:
+            # Исправлено: f-строка для пароля
+            return f"redis://:{self.password}@{self.host}:{self.port}/0"
+        return f"redis://{self.host}:{self.port}/0"
 
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(
@@ -56,6 +71,7 @@ class AppConfig(BaseSettings):
     jwt: JwtConfig
     admin: AdminConfig
     file_url: FileUrl
+    redis: RedisConfig
 
 
 
