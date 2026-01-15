@@ -4,21 +4,8 @@ from .utils.password_hash import hash_password
 
 
 class UserCreate(BaseModel):
-    last_name: str 
-    first_name: str 
-    third_name: str
-    jshir: str 
-    passport_series: str
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=3)
-
-    @field_validator("last_name", "first_name", "third_name", "jshir", "passport_series", mode="before")
-    @classmethod
-    def strip_strings(cls, v: str) -> str:
-        """Удаляет лишние пробелы в начале и в конце для всех текстовых полей"""
-        if isinstance(v, str):
-            return v.strip()
-        return v
 
     @field_validator("username", mode="before")
     @classmethod
@@ -34,15 +21,21 @@ class UserCreate(BaseModel):
         # Пароль тоже стоит обрезать перед хешированием, если пользователь случайно нажал пробел
         return hash_password(value.strip())
 
+class UserDetailCreate(BaseModel):
+    last_name: str | None = None
+    first_name: str | None = None
+    third_name: str | None = None
+    jshir: str | None = None
+    passport_series: str | None = None
 class UserCreateResponse(BaseModel):
     id: int
-    username: str
-    last_name: str 
-    first_name: str 
-    third_name: str
-    jshir: str 
-    passport_series: str
-    image: str
+    username: str 
+    last_name: str | None = None
+    first_name: str | None = None
+    third_name: str | None = None
+    jshir: str | None = None
+    passport_series: str | None = None
+    image: str | None = None
     
     model_config = ConfigDict(from_attributes=True)
 
@@ -107,3 +100,11 @@ class UpdatePassword(BaseModel):
     def password(self) -> str:
         """Returns the hashed new password."""
         return hash_password(password=self.new_password)
+    
+    
+class AssignUserRole(BaseModel):
+    
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    user_id: int
+    role_id: int

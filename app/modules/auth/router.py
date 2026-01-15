@@ -9,7 +9,10 @@ from .schemas import (
     UserCreate, 
     UserLogin, 
     RefreshRequest, 
-    UpdatePassword
+    UpdatePassword,
+    UserDetailCreate,
+    UserCreateResponse
+    
 )
 
 from models.user import User
@@ -32,6 +35,15 @@ async def register_user(
     service: AuthService = Depends(get_auth_servies)
 ):
     return await service.register_user(credentials=user_credentials)
+
+
+@router.put("/detail", response_model=UserCreateResponse)
+async def add_detail(
+    user_id: int,
+    data: UserDetailCreate,
+    service: AuthService = Depends(get_auth_servies)
+):
+    return await service.add_user_datail(user_id=user_id, data=data)
 
 @router.post("/login", dependencies=[Depends(RateLimiter(times=5, seconds=60))])
 async def login_user(

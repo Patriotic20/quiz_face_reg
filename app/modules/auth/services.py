@@ -2,6 +2,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from core.mixins.crud import update
+from models.role import Role
+from models.association.user_role_association import UserRoleAssociation
 
 from fastapi import HTTPException, status
 
@@ -11,7 +14,9 @@ from .schemas import (
     UserLogin,
     UserLoginResponse,
     RefreshRequest,
-    UpdatePassword
+    UpdatePassword,
+    UserDetailCreate,
+    AssignUserRole
 )
 from .utils.jwt_utils import create_access_token, create_refresh_token, decode_refresh_token
 from .utils.password_hash import verify_password
@@ -37,6 +42,24 @@ class AuthService:
                 model=User,
                 data=credentials,
             )
+            
+            stmt = select(Role).where(Role.name == "user")
+            result = await self.session.execute(stmt)
+            role = result.scalars().first()
+            
+            assign_data = AssignUserRole(
+                user_id=user.id,
+                role_id=role.id
+            )
+            
+            
+            await create(
+                session=self.session,
+                model=UserRoleAssociation,
+                data=assign_data
+            )
+            
+            
             
             logger.info(f"User registered successfully: {user.id} ({user.username})")
 
@@ -196,3 +219,6 @@ class AuthService:
         logger.info(f"Password changed successfully for user: {current_user.id} ({current_user.username})")
         
         return {"message": "Password updated successfully"}
+    
+    async def add_user_datail(self, user_id: int, data: UserDetailCreate):
+        return await update(session=self.session, model=User, id=user_id, data=data, exclude_unset=True)

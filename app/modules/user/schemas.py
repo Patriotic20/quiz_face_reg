@@ -39,6 +39,12 @@ class RoleResponse(RoleBase):
     
 class UserBase(BaseModel):
     username: str
+    last_name: str | None = None
+    first_name: str | None = None
+    third_name: str | None = None
+    jshir: str | None = None
+    passport_series: str | None = None
+    image: str | None = None
     
     
 class UserResponse(UserBase):
