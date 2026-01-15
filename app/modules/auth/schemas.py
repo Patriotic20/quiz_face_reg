@@ -27,6 +27,8 @@ class UserDetailCreate(BaseModel):
     third_name: str | None = None
     jshir: str | None = None
     passport_series: str | None = None
+    
+    
 class UserCreateResponse(BaseModel):
     id: int
     username: str 
